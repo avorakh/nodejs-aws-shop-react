@@ -8,9 +8,28 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { theme } from "~/theme";
 
+// Function to handle global query errors
+const handleGlobalError = (error: unknown) => {
+  if (error instanceof Response) {
+    if (error.status === 401) {
+      alert("Unauthorized access. Please log in.");
+    } else if (error.status === 403) {
+      alert("Forbidden access. You do not have permission to view this resource.");
+    }
+  }
+};
+
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: { refetchOnWindowFocus: false, retry: false, staleTime: Infinity },
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false,
+      staleTime: Infinity,
+      onError: handleGlobalError, // Set the global error handler for queries
+    },
+    mutations: {
+      onError: handleGlobalError, // Set the global error handler for mutations
+    },
   },
 });
 
